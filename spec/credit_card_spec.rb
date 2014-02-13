@@ -11,6 +11,14 @@ describe 'Credit card validation' do
       end
     end
     
+    context 'when the card number has dashes or spaces' do
+      subject(:card_type) { CreditCard.new('3782-8224-6310 005').humanized_card_type }
+      
+      it 'should return a valid card' do
+        expect(card_type).to eq('AMEX')
+      end
+    end
+    
     context 'when it starts with 34 or 37 like an AMEX' do
       it 'should regognise a valid number' do
         card_type = CreditCard.new('378282246310005').humanized_card_type

@@ -8,7 +8,7 @@ class CreditCard
   }
   
   def initialize(card_number)
-    @card_number = card_number
+    @card_number = clean_number(card_number)
   end
   
   def humanized_card_type
@@ -16,7 +16,7 @@ class CreditCard
   end
   
   def valid?
-    card_type && luhn_checksum
+    card_type && valid_checksum?
   end
   
   def summary
@@ -25,22 +25,23 @@ class CreditCard
   
   private
   
+    def clean_number(number)
+      number.gsub(/\D/, '')
+    end
+
     def card_type
       CARD_TYPES.map{|n, p| n if @card_number =~ p}.compact.first
     end
   
-    def luhn_checksum
+    def valid_checksum?
       numbers = @card_number.scan(/./).map(&:to_i)
-      total = 0
-      numbers.reverse.each_with_index do |digit, index|
+      numbers.reverse.map.with_index do |digit, index|
         if index % 2 > 0
-          doubled = digit * 2
-          total += doubled < 10 ? doubled : (doubled - 9)
+          (digit * 2) < 10 ? (digit * 2) : ((digit * 2) - 9)
         else
-          total += digit
+          digit
         end
-      end
-      total % 10 == 0
+      end.inject(:+) % 10 == 0
     end
     
 end
