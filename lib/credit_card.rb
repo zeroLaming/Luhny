@@ -11,17 +11,32 @@ class CreditCard
     @card_number = card_number
   end
   
-  def card_type
-    CARD_TYPES.map{|n, p| n if @card_number =~ p}.compact.first || 'Unknown'
+  def humanized_card_type
+    card_type || 'Unknown'
   end
   
   def valid?
-    
+    card_type && luhn_checksum
   end
   
   private
   
-  def luhn_valid?
+    def card_type
+      CARD_TYPES.map{|n, p| n if @card_number =~ p}.compact.first
+    end
+  
+    def luhn_checksum
+      numbers = @card_number.scan(/./).map(&:to_i)
+      total = 0
+      numbers.reverse.each_with_index do |digit, index|
+        if index % 2 > 0
+          doubled = digit * 2
+          total += doubled < 10 ? doubled : (doubled - 9)
+        else
+          total += digit
+        end
+      end
+      total % 10 == 0
+    end
     
-  end
 end
