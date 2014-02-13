@@ -3,8 +3,8 @@ class CreditCard
   CARD_TYPES = {
     'AMEX' => /^3[47]\d{13}?$/,
     'Discover' => /^6011\d{12}?$/,
-    'Mastercard' => /^5[1-5]\d{14}?$/,
-    'Visa' => /^4\d{12}(\d{3})?$/
+    'MasterCard' => /^5[1-5]\d{14}?$/,
+    'VISA' => /^4\d{12}(\d{3})?$/
   }
   
   def initialize(card_number)
@@ -17,6 +17,10 @@ class CreditCard
   
   def valid?
     card_type && luhn_checksum
+  end
+  
+  def summary
+    "#{humanized_card_type}: #{@card_number} #{valid? ? '(valid)' : '(invalid)'}"
   end
   
   private

@@ -1,0 +1,7 @@
+To test:
+
+- rake spec
+
+For the interactive validator:
+
+- rake card_validation
